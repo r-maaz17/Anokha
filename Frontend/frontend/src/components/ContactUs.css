@@ -1,0 +1,356 @@
+@media (min-width: 1201px){
+    .Main_Page{
+        /* border: 1px solid black; */
+        margin-top: 65px;
+        padding-top: 100px;
+        padding-left: 8%;
+        display: flex;
+        /* margin-bottom: 600px; */
+    }
+
+    .one2_portion{
+        width: 38%;
+        /* border: 1px solid green; */
+        height: 500px;
+    }
+
+    .Contact_Us_Heading{
+        margin-top: 50px;
+        font-size: 32px;
+    }
+
+    .Contact_Us_Paragaraph{
+        font-size: 16px;
+        text-align: justify;
+        font-weight: 500;
+    }
+
+    .contact2_portion{
+        /* border: 1px solid red; */
+        width: 100%;
+        padding-left: 2%;
+    }
+
+    .namecontact_label{
+        margin-right: 60px;
+        font-size: 18px;
+    }
+    
+    .emailcontact_label{
+        margin-right: 65px;
+        font-size: 18px;
+    }
+    
+    .carno_label{
+        margin-right: 80px;
+        font-size: 18px;
+    }
+    
+    .ratingcontact_label{
+        margin-right: 60px;
+        font-size: 18px;
+    }
+    
+    .message_label{
+        margin-right: 38px;
+        font-size: 18px;
+    }
+
+    .name_input{
+        margin-top: 18px;
+        height: 30px;
+        width: 50%;
+        border-radius: 4px;
+        border: 1px solid black;
+        font-size: 16px;
+        padding-left: 30px;
+    }
+}
+
+@media (min-width: 993px) and (max-width: 1200px){
+    .Main_Page{
+        /* border: 1px solid black; */
+        margin-top: 65px;
+        padding-top: 100px;
+        padding-left: 8%;
+        display: flex;
+        /* margin-bottom: 600px; */
+    }
+
+    .one2_portion{
+        width: 38%;
+        /* border: 1px solid green; */
+        height: 400px;
+    }
+
+    .Contact_Us_Heading{
+        margin-top: 50px;
+        font-size: 32px;
+    }
+
+    .Contact_Us_Paragaraph{
+        font-size: 16px;
+        text-align: justify;
+        font-weight: 500;
+    }
+
+    .contact2_portion{
+        /* border: 1px solid red; */
+        width: 50%;
+        padding-left: 6%;
+    }
+
+    .namecontact_label{
+        margin-right: 60px;
+        font-size: 18px;
+    }
+    
+    .emailcontact_label{
+        margin-right: 65px;
+        font-size: 18px;
+    }
+    
+    .carno_label{
+        margin-right: 80px;
+        font-size: 18px;
+    }
+    
+    .ratingcontact_label{
+        margin-right: 60px;
+        font-size: 18px;
+    }
+    
+    .message_label{
+        margin-right: 38px;
+        font-size: 18px;
+    }
+
+    .name_input{
+        margin-top: 18px;
+        height: 30px;
+        width: 60%;
+        border-radius: 4px;
+        border: 1px solid black;
+        font-size: 16px;
+        padding-left: 30px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px){
+    .Main_Page{
+        /* border: 1px solid black; */
+        margin-top: 65px;
+        padding-top: 100px;
+        padding-left: 8%;
+        display: flex;
+        /* margin-bottom: 600px; */
+    }
+
+    .one2_portion{
+        width: 38%;
+        /* border: 1px solid green; */
+        height: 350px;
+    }
+
+    .Contact_Us_Heading{
+        margin-top: 50px;
+        font-size: 32px;
+    }
+
+    .Contact_Us_Paragaraph{
+        font-size: 16px;
+        text-align: justify;
+        font-weight: 500;
+    }
+
+    .contact2_portion{
+        /* border: 1px solid red; */
+        width: 50%;
+        padding-left: 4%;
+    }
+
+    .namecontact_label{
+        margin-right: 40px;
+        font-size: 18px;
+    }
+    
+    .emailcontact_label{
+        margin-right: 45px;
+        font-size: 18px;
+    }
+    
+    .carno_label{
+        margin-right: 60px;
+        font-size: 18px;
+    }
+    
+    .ratingcontact_label{
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    .message_label{
+        margin-right: 20px;
+        font-size: 18px;
+    }
+
+    .name_input{
+        margin-top: 18px;
+        height: 30px;
+        width: 60%;
+        border-radius: 4px;
+        border: 1px solid black;
+        font-size: 16px;
+        padding-left: 30px;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px){
+    .Main_Page{
+        /* border: 1px solid black; */
+        margin-top: 65px;
+        padding-top: 70px;
+        /* padding-left: 8%; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* margin-bottom: 600px; */
+    }
+
+    .one2_portion{
+        width: 70%;
+        /* border: 1px solid green; */
+        /* height: 200px; */
+    }
+
+    .Contact_Us_Heading{
+        margin-top: 50px;
+        font-size: 32px;
+    }
+
+    .Contact_Us_Paragaraph{
+        font-size: 16px;
+        text-align: justify;
+        font-weight: 500;
+    }
+
+    .contact2_portion{
+        /* margin-top: 20px; */
+        /* border: 1px solid red; */
+        /* background-color: green; */
+        width: 80%;
+        padding-left: 2%;
+    }
+
+    .namecontact_label{
+        margin-right: 60px;
+        font-size: 18px;
+    }
+    
+    .emailcontact_label{
+        margin-right: 65px;
+        font-size: 18px;
+    }
+    
+    .carno_label{
+        margin-right: 80px;
+        font-size: 18px;
+    }
+    
+    .ratingcontact_label{
+        margin-right: 40px;
+        font-size: 18px;
+    }
+    
+    .message_label{
+        margin-right: 38px;
+        font-size: 18px;
+    }
+
+    .name_input{
+        margin-top: 18px;
+        height: 30px;
+        width: 50%;
+        border-radius: 4px;
+        border: 1px solid black;
+        font-size: 16px;
+        padding-left: 30px;
+    }
+}
+
+@media (max-width: 576px){
+    .Main_Page{
+        /* border: 1px solid black; */
+        margin-top: 65px;
+        padding-top: 70px;
+        /* padding-left: 8%; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* margin-bottom: 600px; */
+    }
+
+    .one2_portion{
+        width: 70%;
+        /* border: 1px solid green; */
+        /* height: 350px; */
+    }
+
+    .Contact_Us_Heading{
+        margin-top: 50px;
+        font-size: 32px;
+    }
+
+    .Contact_Us_Paragaraph{
+        font-size: 16px;
+        text-align: justify;
+        font-weight: 500;
+    }
+
+    .contact2_portion{
+        /* margin-top: 20px; */
+        /* border: 1px solid red; */
+        width: 90%;
+        /* padding-left: 2%; */
+    }
+
+    .namecontact_label{
+        margin-right: 40px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    
+    .emailcontact_label{
+        margin-right: 45px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    
+    .carno_label{
+        margin-right: 41px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    
+    .ratingcontact_label{
+        margin-right: 10px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    
+    .message_label{
+        margin-right: 18px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .name_input{
+        margin-top: 18px;
+        height: 30px;
+        width: 60%;
+        border-radius: 4px;
+        border: 1px solid black;
+        font-size: 16px;
+        padding-left:30px;
+}
+}
