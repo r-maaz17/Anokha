@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const ordersController = require('../controller/ordersController');
+const { verifyTokenMiddleware }= require('../middleware/authMiddleware');
 
 // Create a new order
-router.post('/orders', ordersController.createOrder);
+router.post('/order/create', verifyTokenMiddleware,ordersController.createOrder);
 
 // Get all orders
 router.get('/orders', ordersController.getOrders);
@@ -12,7 +13,7 @@ router.get('/orders', ordersController.getOrders);
 router.get('/orders/:orderId', ordersController.getOrderById);
 
 // Update an order by OrderId
-router.put('/orders/:orderId', ordersController.updateOrder);
+router.put('/order/:id',verifyTokenMiddleware,ordersController.setOrderStatus);
 
 // Delete an order by OrderId
 router.delete('/orders/:orderId', ordersController.deleteOrder);

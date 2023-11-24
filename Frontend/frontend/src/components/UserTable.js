@@ -12,6 +12,7 @@ import { Modal, Form, Input, Select } from 'antd';
 import { useState } from 'react';
 import axios from 'axios';
 import { SearchBox } from './SmallComponents/Search';
+import { API_URLS } from './apis/apiConfig';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -65,7 +66,7 @@ export default function UserLists(props) {
     const getUsers = async () => {
         try {
 
-            const {data} = await axios.get('http://localhost:8000/api/v1/users');
+            const {data} = await axios.get(API_URLS.GET_USERS);
             console.log(data);
             setUsers(data)
         }
@@ -89,7 +90,7 @@ export default function UserLists(props) {
     const getUser = async (id)=>{
         try {
             setLoading(true);
-            const {data} = await axios.get(`http://localhost:8000/api/v1/users/${id}`);
+            const {data} = await axios.get(`${API_URLS.GET_USER}${id}`);
             console.log('data',data)
             setEditUser(data)
             console.log('a',editUser)
@@ -99,7 +100,7 @@ export default function UserLists(props) {
     }
     const editData = async () => {
         try {
-          const {data} = await axios.put(`http://localhost:8000/api/v1/users/${editUser?._id}`, formData );
+          const {data} = await axios.put(`${API_URLS.UPDATE_USER}${editUser?._id}`, formData );
           getUsers()
           setIsEdit(false)
     
@@ -107,14 +108,14 @@ export default function UserLists(props) {
       }
       const delUser = async (id) => {
         try {
-          const data = await axios.delete(`http://localhost:8000/api/v1/users/${id}`);
+          const data = await axios.delete(`${API_URLS.DELETE_USER}${id}`);
           getUsers();
         } catch (error) {}
       };
       const addUser = async () => {
         try {
             console.log("USer added",data);
-            const {data} = await axios.post(`http://localhost:8000/api/v1/users`, formData );
+            const {data} = await axios.post(API_URLS.CREATE_USER, formData );
             console.log("USer added",data);
             getUsers()
       
@@ -177,7 +178,7 @@ export default function UserLists(props) {
         // console.log(formData.category);
         try {
           setLoading(true);
-          const {data} = await axios.post("http://localhost:8000/api/v1/users",formData);
+          const {data} = await axios.post(API_URLS.CREATE_USER,formData);
     
           setUsers([...Users, data])
           setLoading(false);

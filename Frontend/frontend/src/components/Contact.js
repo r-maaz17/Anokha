@@ -4,6 +4,8 @@ import './ContactUs.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import getUserAuth from "./apis/utils";
+import { API_URLS } from "./apis/apiConfig";
+import Navbar from "./Navbar";
 const Contact = () => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
@@ -20,14 +22,14 @@ const Contact = () => {
       };
       const createNewMessage = async()=> {
         const data = await getUserAuth();
-        const id = data.data.replace(/"/g, '');
+        const id = data.data._id;
         const payload = {
             userId:id,
             name:name,
             email:email,
             Message:message
         }
-        const response = await axios.post('http://localhost:8000/api/v1/messages',payload)
+        const response = await axios.post(API_URLS.CREATE_NEW_MESSAGE,payload)
         if (response.status === 200)
         {
 
@@ -38,12 +40,88 @@ const Contact = () => {
 
 
     }, []);
+    const [products, setProducts] = useState([]);
+  const [cartItems, setCartItems] = useState([])
+  const [status, setStatus] = useState('');
+
+  const getProducts = async () => {
+    try {
+
+      const { data } = await axios.get(API_URLS.GET_PRODUCTS);
+      setProducts(data)
+    }
+    catch {
+      console.log("Error in fething Users")
+    }
+  }
+  useEffect(() => {
+    getProducts();
+    try {
+      getCartItems();
+    }
+    catch {
+
+    }
+
+  }, [])
+
+
+  async function getCartItems() {
+    try {
+      // try {
+      const token = localStorage.getItem('userItem');
+      const config = {
+        headers: {
+          'Authorization': token,
+        },
+      };
+
+      const { data } = await axios.get(API_URLS.GET_CARTITEMS, config)
+      setCartItems(prevCartItems => data.userCart.cartItems);
+      //console.log("response",data.userCart)
+      return data;
+    }
+    catch {
+      return []
+    }
+  }
+  async function addToCart(_id) {
+    const response = await getUserAuth();
+    // console.log("RESPONSE",response)
+    const token = response.data._id;
+    const payload = {
+      userId: token,
+      productId: _id,
+      status: "AddedIntoCart"
+    }
+    const toke = localStorage.getItem('userItem');
+    const config = {
+      headers: {
+        'Authorization': toke, // Assuming it's a bearer token
+      }
+    };
+    const result = await axios.post(API_URLS.ADD_INTO_CART, payload, config);
+    setStatus("ADDED INTO CART")
+    try {
+      await getCartItems();
+    }
+    catch {
+
+    }
+    return result
+
+
+  }
+
 
 
 
 
     return (
+       <div>
+              <Navbar cartLength={cartItems.length} isUser={true} />
         <div className="Main_Page">
+             
             <div className="one2_portion">
                 <h2 className="Contact_Us_Heading">Contact Us :- </h2>
                 <h5 className="Contact_Us_Paragaraph">
@@ -131,6 +209,7 @@ const Contact = () => {
                     </form>
                 </div>
             </div>
+        </div>
         </div>
     );
 };

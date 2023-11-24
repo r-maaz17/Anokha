@@ -8,10 +8,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
-import { Modal, Form, Input, Select } from 'antd';
 import { useState } from 'react';
 import getUserAuth from './apis/utils';
 import axios from 'axios';
+import PayButton from './SmallComponents/PayButton';
+import { API_URLS } from './apis/apiConfig';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -41,134 +42,122 @@ function createData(name, calories, fat, carbs, protein) {
 export default function CheckOut(props) {
     const [productsInCart, setProductsInCart] = useState([]);
     const [loading, setLoading] = useState(false);
-    //const [cartItems, setCartItems] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
     const [status, setStatus] = useState('');
+    const [totalPrice, setTotalPrice] = useState(0)
 
     // React.useEffect(async () => {
     //     await getCartItems();
     //     console.log("CARTIEMS",cartItems)
     // }, [])
-   
-    const cartItems = [
-        {
-            "userId": "6558b1da1c1f38c9c43a61f8",
-            "productId": "6559d1b9bb7b92b477d66fd7",
-            "status": "AddedIntoCart",
-            "quantity": 1
-        },
-        {
-            "userId": "6558b1da1c1f38c9c43a61f8",
-            "productId": "6559d1c8bb7b92b477d66fda",
-            "status": "AddedIntoCart",
-            "quantity": 1
-        },
-        {
-            "userId": "6558b1da1c1f38c9c43a61f8",
-            "productId": "6559d1d2bb7b92b477d66fdd",
-            "status": "AddedIntoCart",
-            "quantity": 1
-        }
-    ]
-    
-    
-    React.useEffect(() => {
-        const fetchData = async () => {
-            const updatedProducts = [];
-            
-            await Promise.all(
-                cartItems.map(async (element) => {
-                    const product = await getProduct(element.productId);
-                    updatedProducts.push(product);
-                })
-            );
-        
-            setProductsInCart(updatedProducts);
-        };
-        fetchData();
-    }, [cartItems]); // Assuming cartItems is a dependency
-    
-        
-    React.useEffect(async() => {
 
-       
-    //    const fetchData = async () => {
-    //        console.log("CART ITEMs,",cartItems)
-    //        cartItems.map((element) => {
-    //            console.log(element.productId)
-
-    //            const product = getProduct(element.productId);
-    //            setCartItems(prevProductsInCart => [product]);
-    //        }
-    //        )
-    //    };
-
-    //    fetchData();
-   }, [])
     async function getCartItems() {
         // try {
-        const a = await getUserAuth();
-        const userId = a.data.replace(/"/g, '');
-        const payload = {
-            userId: userId,
-        }
         const token = localStorage.getItem('userItem');
         const config = {
             headers: {
                 'Authorization': token,
             },
         };
+        // setLoading(true)
+        const { data } = await axios.get(API_URLS.GET_CARTITEMS, config)
+        setCartItems(prevCartItems => data.userCart.cartItems);
+        // setLoading(false)
+        //console.log("response",data.userCart)
+        return data;
+    }
+    React.useEffect(() => {
 
-        const response = await axios.post(`http://127.0.0.1:8000/api/v1/cartitems`, payload, config)
-        //setCartItems(response.data);
-        // } catch (error) {
-        //   setCartItems([]);
+        // try {
+            getCartItems();
+            localStorage.removeItem('userCartItems')
+            
+        // }
+        // catch {
 
         // }
-    }
-    
+    }, []); // Assuming cartItems is a dependency
+    // React.useEffect(() => {
+    //     getTotalPrice();
+    // }, [productsInCart]);
+    const fetchData = async () => {
+        const updatedProducts = [];
+        setLoading(true)
+        await Promise.all(
+            cartItems.map(async (element) => {
+                const product = await getProduct(element.productId);
+                product.quantity = element.quantity;
+                updatedProducts.push(product);
+            })
+        );
+
+        setProductsInCart(updatedProducts);
+        setLoading(false)
+        getTotalPrice();
+    };
+
+    React.useEffect(() => {
+        try {
+
+
+            fetchData();
+           // getTotalPrice();
+            // getTotalPrice();
+        }
+        catch {
+
+        }
+    }, [cartItems]); // Assuming cartItems is a dependenc
+
+
     const getProduct = async (id) => {
-        const product = await axios.get(`http://localhost:8000/api/v1/product/${id}`)
-        return product.data;
+        try {
+            const product = await axios.get(`${API_URLS.GET_PRODUCT}${id}`)
+            return product.data;
+        }
+        catch {
+
+        }
     }
 
     async function removeFromCart(id) {
-        var userId = await getUserAuth();
-        userId = userId.replace(/"/g, '');
-        const config = {
-            headers: {
-                'Authorization': `${localStorage.getItem('userItem')}`,
-                'Content-Type': 'application/json',
+        try {
+            var userId = await getUserAuth();
+            console.log("USERD=", userId)
+            userId = userId.data._id;
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
+            const payload = {
+                userId: userId,
+                productId: id,
             }
+            console.log(config);
+            const response = await axios.delete(`${API_URLS.DELETE_FROM_CART}${id}`, config)
+            if (response.status === 200) {
+                setStatus("DELETED FROM CART");
+                getCartItems();
+                await getTotalPrice()
+            }
+
         }
-        const payload = {
-            userId: userId,
-            productId: id,
-        }
-        const response = await axios.delete(`http://localhost:8000/api/v1/${id}`,)
-        if (response.status === 200) {
-            setStatus("DELETED FROM CART");
-            //getCartItems();
+        catch {
+
         }
     }
-
-    async function submit(e) {
-        // e.preventDefault();
-
-        // // console.log(formData.category);
-        // try {
-        //   setLoading(true);
-        //   //const {data} = await axios.post("http://localhost:8000/api/v1/orders",formData);
-
-        //   setOrders([...Orders, data])
-        //   setLoading(false);
-        //   onFinish();
-
-        //   // console.log("SIGNUP RESPONSE: ", data);
-        // } catch (err) {
-        //   setLoading(false);
-        // }
+    async function getTotalPrice() {
+        var total = 0
+        console.log(productsInCart)
+        productsInCart.map((row) => {
+            total = total + parseInt(row.Price)
+        })
+        console.log(total)
+        setTotalPrice(total)
     }
-        return (
+    return (
 
         <div>
 
@@ -181,12 +170,19 @@ export default function CheckOut(props) {
                             <StyledTableCell align="center">Product Name</StyledTableCell>
                             <StyledTableCell align="center">Product Description</StyledTableCell>
                             <StyledTableCell align="center">Product Price</StyledTableCell>
+                            <StyledTableCell align="center">Total</StyledTableCell>
                             <StyledTableCell align="center"></StyledTableCell>
+
 
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {productsInCart.map((row) => (
+                        {
+                         console.log(productsInCart)   
+                        }
+                        {
+
+                        productsInCart.map((row) => (
                             <StyledTableRow key={row.name}>
                                 {/* <StyledTableCell component="th" scope="row">
                                     {row.name}
@@ -194,15 +190,27 @@ export default function CheckOut(props) {
                                 <StyledTableCell align="center">{row.ProductName}</StyledTableCell>
                                 <StyledTableCell align="center">{row.Description}</StyledTableCell>
                                 <StyledTableCell align="center">{row.Price}</StyledTableCell>
+                                <StyledTableCell align="center"></StyledTableCell>
                                 <StyledTableCell align="center"><Button onClick={() => removeFromCart(row._id)} variant="contained" color="success">Remove From Cart</Button></StyledTableCell>
-
-
                             </StyledTableRow>
                         ))}
                     </TableBody>
+                    <StyledTableRow>
+                    <StyledTableCell align="center"></StyledTableCell>
+                    <StyledTableCell align="center"></StyledTableCell>
+                    <StyledTableCell align="center"></StyledTableCell>
+        { loading ? " ": 
+                    <StyledTableCell align="center" style={{backgroundColor:'silver'}}><b>
+                    Total Price::{totalPrice}RS</b></StyledTableCell>}
+                    <StyledTableCell align="center"></StyledTableCell>
+
+
+                </StyledTableRow>
                 </Table>
+                
             </TableContainer>
-            <Button style={{marginLeft:50, }} variant="contained" color="error">Checkout</Button>
+
+            <PayButton cartItems={productsInCart} />
         </div>
     );
 }

@@ -8,11 +8,15 @@ import Typography from '@mui/material/Typography';
 import Rating from '@mui/material/Rating';
 import getUserAuth from './apis/utils';
 import axios from 'axios';
+import { API_URLS } from './apis/apiConfig';
+import { useNavigate } from 'react-router-dom';
 export default function ProductCard(props) {
+    const navigate = useNavigate('');
 
     async function addToCart() {
+        try{
         var resp = await getUserAuth();
-        const token = resp.data.replace(/"/g, '');
+        const token = resp.data._id;
         const data = await getCartItems();
        // console.log("Status = ",data.status)
 
@@ -56,14 +60,14 @@ else {
     data.userCart.cartItems = updatedItems.cartItems
 }   
 
-            const res = await axios.put(`http://localhost:8000/api/v1/cart/${data.userCart._id}`,  data.userCart.cartItems, config);
+            const res = await axios.put(`${API_URLS.ADD_INTO_CART}${data.userCart._id}`,  data.userCart.cartItems, config);
             return res.data;
         }
 
         else if (data.data.status === 404) {
           //  console.log("YES")
             var userAuth = await getUserAuth();
-            const token = userAuth.data.replace(/"/g, '');
+            const token = userAuth.data._id;
             const newCart = {
                 userId: token,
                 cartItems: {
@@ -73,7 +77,7 @@ else {
                     quantity: 1
                 }
             }
-            const res = await axios.post('http://localhost:3000/api/v1/cart', newCart, config);
+            const res = await axios.post(API_URLS.CREATE_NEW_CART, newCart, config);
             return res.data;
         }
 
@@ -85,10 +89,13 @@ else {
        // const result = axios.post('http://localhost:8000/api/v1/cart',cart,config);
         //return result;
 
-
+    }
+    catch{
+        navigate('/signin')
+    }
     }
     async function getCartItems() {
-        // try {
+        try {
         const token = localStorage.getItem('userItem');
         const config = {
             headers: {
@@ -96,13 +103,16 @@ else {
             },
         };
 
-        const {data} = await axios.get(`http://127.0.0.1:8000/api/v1/cartitems`, config)
-      //console.log("response",data.userCart)
+        const {data} = await axios.get(API_URLS.GET_CARTITEMS, config)
+      console.log("response",data.userCart)
         return data;
+    }catch{
+        navigate('/signin')
+    }
     }
     async function getCartItem(productId) {
         var response = await getUserAuth();
-        const token = response.data.replace(/"/g, '');
+        const token = response.data._id;
         const payload = {
             userId: token,
             productId: productId
@@ -113,7 +123,7 @@ else {
                 'Content-Type': 'application/json', // Adjust the content type if needed
             }
         };
-        response = await axios.post(`http://localhost:8000/api/v1/cartitem/${productId}`, config);
+        response = await axios.post(`${API_URLS.GET_CARTITEM}${productId}`, config);
         if (response.status === 200) {
             return response.data.cartItem;
         }
@@ -135,30 +145,31 @@ else {
                 </Typography>
                 <div className='row'>
                     <div className='col'>
-                        <Typography component="legend">Rating</Typography>
+                        <Typography component="legend">{props.Description}</Typography>
                         <br />
 
-                        <Rating
-                            name="simple-controlled"
-                            value={props.rating} readOnly
-                        />
+                        <div className='col'>
+                                <Typography component="legend">Quantity Left : {props.quantityAvailable}</Typography>
+                            </div>
                     </div>
                     <div className='col'>
-                        <div className='row'>
+                        {/* <div className='row'> */}
+
                             <div className='col'>
                                 <Typography component="legend">Price</Typography>
                             </div>
                             <div className='col'>
-                                <Typography component="legend">{props.price}</Typography>
+                                <Typography component="legend">{props.price}Rs.</Typography>
                             </div>
-                        </div>
+       
+                     
 
                     </div>
                 </div>
             </CardContent>
             <CardActions>
                 <Button size="small" onClick={addToCart}>Add to Cart</Button>
-                <Button size="small" onClick={props.buy}>Buy</Button>
+                <Button size="small" onClick={()=>{}}>Go To Details</Button>
             </CardActions>
         </Card>
     );

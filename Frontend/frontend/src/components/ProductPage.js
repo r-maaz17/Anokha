@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Single from './ProductSingle';
+import { API_URLS } from "./apis/apiConfig";
 
 import axios from "axios";
 // import User from "../apicall/products";
@@ -14,7 +15,7 @@ function SingleProduct() {
 
   const getProduct = async() => {
       try{
-          let {data} = await axios.get(`http://localhost:8000/product/${id}`)
+          let {data} = await axios.get(`${API_URLS.GET_PRODUCT}${id}`)
           setProductsArray(data);
           
       } catch(err) {

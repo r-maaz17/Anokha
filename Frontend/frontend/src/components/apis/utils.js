@@ -2,7 +2,11 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 const getUserAuth = async()=> {
        const userItem = localStorage.getItem('userItem');
-       console.log(userItem)
+       const config = {
+        headers: {
+            'Authorization': userItem,
+        },
+    };
        if (userItem != null)
        {
          

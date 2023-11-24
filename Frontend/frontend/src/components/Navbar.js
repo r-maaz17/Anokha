@@ -4,23 +4,21 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { ContactMail } from '@mui/icons-material';
 import axios from 'axios';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import getUserAuth from './apis/utils';
 import { useState } from 'react';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Home } from '@mui/icons-material';
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -63,19 +61,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Navbar(props) {
   const [userLogined, setUserLogined] = useState(false);
-  
-  React.useEffect(async () => {
-    
-    const data = await getUserAuth();
-    if (data.status === "UnAuthorized") {
-      
-      setUserLogined(false);
-    }
-    else if (data.status === "Authorized") {
-      setUserLogined(true);
-    }
+
+  React.useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        const data = await getUserAuth();
+        console.log("User Auth", data);
+
+        if (data.status === "UnAuthorized") {
+          setUserLogined(false);
+        } else if (data.status === "Authorized") {
+          setUserLogined(true);
+        }
+      } catch (error) {
+        console.error('Error fetching user authentication:', error);
+        // Handle the error, if needed
+      }
+    };
+
+    fetchData();
+
   }, [])
-  
+
   const navigate = useNavigate('');
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -86,7 +94,12 @@ export default function Navbar(props) {
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleLogout = () => {
+    localStorage.removeItem('userItem');
+    navigate('/home')
+    window.location.reload(true);
 
+  }
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
@@ -99,6 +112,9 @@ export default function Navbar(props) {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+  const handleContact = ()=>{
+    navigate('/contact')
+  }
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -118,8 +134,7 @@ export default function Navbar(props) {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
 
@@ -143,7 +158,7 @@ export default function Navbar(props) {
 
       <div>
         <MenuItem>
-          <IconButton size="large" aria-label="show 4 new mails" color="inherit" onClick={()=>{navigate('/checkout')}}>
+          <IconButton size="large" aria-label="show 4 new mails" color="inherit" onClick={() => { navigate('/checkout') }}>
             <Badge badgeContent={props.cartLength} color="error">
               <MailIcon />
             </Badge>
@@ -151,15 +166,6 @@ export default function Navbar(props) {
           <p>Messages</p>
         </MenuItem>
         <MenuItem>
-          <IconButton
-            size="large"
-            aria-label="show 17 new notifications"
-            color="inherit"
-          >
-            <Badge badgeContent={17} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
           <p>Notifications</p>
         </MenuItem>
         <MenuItem onClick={handleProfileMenuOpen}>
@@ -181,7 +187,7 @@ export default function Navbar(props) {
             aria-controls="primary-search-account-menu"
             aria-haspopup="true"
             color="inherit"
-          >
+            onClick={handleLogout}>
             <AccountCircle />
           </IconButton>
           <p>Logout</p>
@@ -197,22 +203,37 @@ export default function Navbar(props) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          {userLogined ?
+          {userLogined && props.isUser ?
             (<div>
               <Box sx={{ flexGrow: 1 }} />
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit" onClick={()=>{navigate('/checkout')}}>
-                  <Badge badgeContent={props.cartLength} color="error">
-                    <AddShoppingCartIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
+              <IconButton
                   size="large"
-                  aria-label="show 17 new notifications"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={()=>{navigate('/home')}}
                   color="inherit"
                 >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
+                  <Home />
+                </IconButton>
+                
+                
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleContact}
+                  color="inherit"
+                >
+                  <ContactMail />
+                </IconButton>
+                <IconButton size="large" aria-label="show 4 new mails" color="inherit" onClick={() => { navigate('/checkout') }} style={{marginLeft:'700%'}}>
+                  <Badge badgeContent={props.cartLength} color="error">
+                    <AddShoppingCartIcon />
                   </Badge>
                 </IconButton>
                 <IconButton
@@ -239,11 +260,13 @@ export default function Navbar(props) {
                   <MoreIcon />
                 </IconButton>
               </Box>
-            </div>)
-            : <div>
+              
+            </div>
+            )
+            : (props.isUser && <div>
               <Button onClick={() => { navigate('/signup') }} variant="contained" color="error">Sign Up</Button>
               <Button onClick={() => { navigate('/signin') }} variant="contained" color="success">Sign in</Button>
-            </div>
+            </div>)
           }
 
 

@@ -1,14 +1,29 @@
 const Order = require('../models/orders');
+const user = require('../models/user');
 
 // Create a new order
 exports.createOrder = async (req, res) => {
-  try {
-    const order = new Order(req.body);
-    await order.save();
-    res.status(201).json(order);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  // try {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const day = String(today.getDate()).padStart(2, '0');
+
+  const todayDate = `${year}-${month}-${day}`;
+  var email = await user.findOne({ _id: req.userId.replace(/"/g, '') });
+  console.log("USER ", email)
+  email = email.Email;
+  req.body.userEmail = email;
+  req.body.userId = req.userId.replace(/"/g, '')
+  req.body.Status = 'Pending';
+  req.body.OrderDate = todayDate;
+  console.log("body", req.body);
+  const order = new Order(req.body);
+  await order.save();
+  res.status(201).json(order);
+  // } catch (error) {
+  //   res.status(500).json({ error: error.message });
+  // }
 };
 
 // Get all orders
@@ -34,6 +49,22 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
+exports.setOrderStatus = async (req, res) => {
+    const updatedBy = req.userId;
+    if (req.body.status === "approve" || req.body.status === "reject")
+    {
+    const message = await Order.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: { Status: req.body.status,updatedBy: updatedBy.replace(/"/g, '')} },
+      { new: true } // This ensures that the updated document is returned
+    );
+    res.status(200).json(message);
+    }
+
+  // } catch (error) {
+  //   res.status(500).json({ error: error.message });
+  // }
+};
 // Update an order by OrderId
 exports.updateOrder = async (req, res) => {
   try {

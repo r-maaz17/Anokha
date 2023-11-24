@@ -2,14 +2,13 @@ import React from "react";
 import {
     MDBContainer,
     MDBInput,
-    MDBCheckbox,
-    MDBBtn,
-    MDBIcon
+    MDBBtn
 } from 'mdb-react-ui-kit';
 import Navbar from "./Navbar";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { API_URLS } from "./apis/apiConfig";
 
 const Verification = () => {
 
@@ -21,7 +20,7 @@ const Verification = () => {
             Email: localStorage.getItem('userEmailForSignUp'),
             code: code
         }
-        const response = await axios.post('http://localhost:8000/api/v1/user/checkcode',payload)
+        const response = await axios.post(API_URLS.CHECK_CODE,payload)
         if (response.status === 200){
             navigate('/signin')
         }

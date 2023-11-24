@@ -8,11 +8,9 @@ const AWS = require('aws-sdk');
  * @return string S3 image URL or error accordingly
  */
 
-
+// Uploads the image to Amazon s3 bucket and return the image url
 async function upload(req, res) {
-    console.log()
     const uploadedFile = req.body.image;
-    console.log(req.body)
     const params = {
         Bucket: process.env.AMAZON_BUCKET_NAME,
         Key: req.body.imageName,
@@ -28,7 +26,6 @@ async function upload(req, res) {
         console.error(err);
         return "";
     }
-    console.log(data.Location)
     return data.Location;
 }
 /**

@@ -11,7 +11,6 @@ import {
     MDBIcon
 }
 
-
     from 'mdb-react-ui-kit';
 import Navbar from './Navbar';
 import { Button } from '@mui/material';
@@ -32,8 +31,15 @@ const SignIn = () => {
           // Log the JSON response
           console.log('Response:', response.data);
           if (response.status == 200){
-            localStorage.setItem('userItem',response.data.token)
+            localStorage.setItem('userItem',response.data.token);
+            if (response.data.RoleId === "admin")
+            {
+
+              navigate('/admin/products')
+            }
+            else{
                 navigate('/home')
+            }
           }
 
           else{

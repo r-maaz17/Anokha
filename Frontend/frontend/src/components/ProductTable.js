@@ -49,14 +49,7 @@ function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-const { Option } = Select;
+
 const layout = {
     labelCol: {
         span: 8,
@@ -82,28 +75,12 @@ export default function ProductLists(props) {
     React.useEffect(() => {
         getProducts();
     }, [])
-    // const actions = [
-    //     {
-    //         'name': 'Edit',
-    //         'enable': 'true',
-    //         'action': editProduct()
-    //     },
-    //     {
-    //         'name': 'Delete',
-    //         'enable': 'true',
-    //         'action': delProduct()
-    //     }
-    // ]
-    // const convertProducts = ()=> ({
-
-    //     console.log(actions)
-    // })
 
 
     const getProducts = async () => {
         try {
 
-            const { data } = await axios.get('http://localhost:8000/api/v1/products');
+            const { data } = await axios.get(API_URLS.GET_PRODUCTS);
             console.log(data);
             setProducts(data)
         }
@@ -124,30 +101,43 @@ export default function ProductLists(props) {
     const getProduct = async (id) => {
         try {
             setLoading(true);
-            const { data } = await axios.get(`http://localhost:8000/api/v1/products/${id}`);
+            const { data } = await axios.get(`${API_URLS.GET_PRODUCT}${id}`);
             console.log('data', data)
             setEditProduct(data)
             console.log('a', editProduct)
             setLoading(false);
         } catch (error) {
+
         }
     }
     const editData = async () => {
         try {
-            const { data } = await axios.put(`http://localhost:8000/api/v1/products/${editProduct?._id}`, formData);
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
+            const { data } = await axios.put(`${API_URLS.UPDATE_PRODUCT}${editProduct?._id}`, formData,config);
             getProducts()
 
         } catch (error) { }
     }
     const delProduct = async (id) => {
         try {
-            const data = await axios.delete(`http://localhost:8000/api/v1/product/delete/${id}`);
+            const data = await axios.delete(`${API_URLS.DELETE_PRODUCT}${id}`);
             getProducts();
         } catch (error) { }
     };
     const addProduct = async () => {
         try {
-            const { data } = await axios.post(`http://localhost:8000/api/v1/products`, formData);
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
+            const { data } = await axios.post(API_URLS.CREATE_PRODUCT, formData, config);
             getProducts()
 
         } catch (error) { }
@@ -217,7 +207,7 @@ export default function ProductLists(props) {
                 ...formData,
                 image: image,
             };
-            const { data } = await axios.post("http://localhost:8000/api/v1/product/create", formDataWithImage);
+            const { data } = await axios.post(API_URLS.CREATE_PRODUCT, formDataWithImage);
 
             setProducts([...products, data])
             setLoading(false);
@@ -231,9 +221,9 @@ export default function ProductLists(props) {
     const onSelectFile = async (event) => {
         const file = event.target.files[0];
         const convertedFile = await convertToBase64(file);
-        setImage({image: convertedFile, imageName:file.name})
+        setImage({ image: convertedFile, imageName: file.name })
         console.log(image)
-        
+
     }
     const convertToBase64 = (file) => {
         return new Promise(resolve => {

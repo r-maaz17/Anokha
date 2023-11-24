@@ -36,7 +36,7 @@ export default function Dashboard(props) {
             <Divider />
             
             <List>
-                {['Products', 'Users', 'Orders', 'CRM','Suppliers','Feedbacks','Finance','Marketng','E-commerce Sync','Teams','Partners','Customer Assistance Portal','Loyality Management','Trends','Events','Staff Development','Temp'].map((text, index) => (
+                {['Products', 'Users', 'Orders'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton onClick={() => {
                             if (index == 0) {
@@ -48,60 +48,6 @@ export default function Dashboard(props) {
                             else if(index == 2){
                                 navigate('/admin/orders')
                             }
-                            else if(index == 3){
-                                navigate('/admin/crm')
-                            }
-                            else if (index == 4)
-                            {
-                                navigate('/admin/suppliers')
-                            }
-                            else if (index == 5){
-                                navigate('/admin/feedbacks')
-                            }
-                            else if(index == 6)
-                            {
-                                navigate('/admin/finance')
-                            }
-                            else if(index == 7)
-                            {
-                                navigate('/admin/marketing')
-                            }
-                            else if (index == 8)
-                            {
-                                navigate('/admin/e-commerce-sync')
-                            }
-                            else if (index == 9)
-                            {
-                                navigate('/admin/teams')
-                            }
-                            else if (index == 10)
-                            {
-                                navigate('/admin/partners')
-                            }
-                            else if(index == 11)
-                            {
-                                navigate('/admin/customer-assistance')
-                            }
-                            else if(index == 12)
-                            {
-                                navigate('/admin/loyality-management')
-                            }
-                            else if(index == 13){
-                                navigate('/admin/trends')
-                            }
-                            else if(index == 14){
-                                navigate('/admin/events')
-                            }
-                            else if(index == 15)
-                            {
-                                navigate('/admin/staff-development')
-                            }
-                            else if(index == 16)
-                            {
-                                navigate('/admin/temp')
-                            }
-
-
                         }} >
                             <ListItemIcon>
                                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -113,20 +59,12 @@ export default function Dashboard(props) {
             </List>
             <Divider />
             <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                {['All mail'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton onClick={() => {
                                 if (index == 0)
                                 {
                                     navigate('/admin/mail/all-mails')
-                                }
-                                else if(index == 1)
-                                {
-                                    navigate('/admin/mail/trash')
-                                }
-                                else if(index == 2)
-                                {
-                                    navigate('/admin/mail/spam')
                                 }
                         }}>
                             <ListItemIcon>
@@ -151,7 +89,7 @@ export default function Dashboard(props) {
                     ml: { sm: `${drawerWidth}px` },
                 }}
             >
-                <Navbar />
+                <Navbar isUser={false}/>
             </AppBar>
             <Box
                 component="nav"
