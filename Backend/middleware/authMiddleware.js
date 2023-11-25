@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
+const Log = require('../models/Log');
 require('dotenv').config();
 
 
 
 
 // Verify the jwt token
-function verifyJWT(token) {
+async function verifyJWT(token) {
+  try{
     return new Promise((resolve, reject) => {
       jwt.verify(token,process.env.JWT_SECRET_KEY, (err, decoded) => {
         if (err) {
@@ -16,10 +18,19 @@ function verifyJWT(token) {
       });
     });
   }
+  catch(err){
+    const logEntry = new Log({
+      file: 'authMiddleWare.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
+  }
 
 
 // Verify the token is provided and check the validity of token
-function verifyTokenMiddleware(req, res, next) {
+async function verifyTokenMiddleware(req, res, next) {
+  try{
     const token = req.header('Authorization');
     console.log("token",token)
     if (!token) {
@@ -34,8 +45,18 @@ function verifyTokenMiddleware(req, res, next) {
       .catch((err) => {
         console.log(err);
       });
+    }catch(err)
+    {
+      const logEntry = new Log({
+        file: 'authMiddleware.js', 
+        exception: err.message,
+      });
+      await logEntry.save();
+    }
+    
   }
-  function verifyAdminMiddleware(req, res, next) {
+ async function verifyAdminMiddleware(req, res, next) {
+    try{
     const token = req.header('Authorization');
     console.log("token",token)
     if (!token) {
@@ -55,6 +76,14 @@ function verifyTokenMiddleware(req, res, next) {
       .catch((err) => {
         console.log(err);
       });
+    }catch(err)
+    {
+      const logEntry = new Log({
+        file: 'authMiddleware.js', 
+        exception: err.message,
+      });
+      await logEntry.save();
+    }
   }
 
 

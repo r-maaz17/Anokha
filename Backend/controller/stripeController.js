@@ -1,5 +1,8 @@
 const express = require('express')
 const Stripe = require('stripe')
+const Log = require('../models/Log');
+
+
 require('dotenv').config()
 
 const stripe = Stripe(process.env.STRIPE_KEY);
@@ -8,6 +11,7 @@ const stripe = Stripe(process.env.STRIPE_KEY);
 
 // This function created new checkOut session
 async function createCheckout(req, res) {
+  try{
   const line_items = req.body.cartItems.map((item)=>{
     console.log(item)
     return {
@@ -37,6 +41,14 @@ async function createCheckout(req, res) {
     });
   
     res.send({url:session.url})
+  }catch(err)
+  {
+    const logEntry = new Log({
+      file: 'stripeController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 }
 module.exports = {
     createCheckout,

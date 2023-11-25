@@ -1,5 +1,5 @@
 const Cart = require('../models/Cart');
-
+const Log = require('../models/Log');
 // Add item into cart
 exports.addItemIntoCart = async (req, res) => {
   try {
@@ -7,8 +7,12 @@ exports.addItemIntoCart = async (req, res) => {
     await cart.save();
     res.status(201).json(cart);
   }
-  catch {
-    res.status(500).json({ error: 'server error' })
+  catch(err) {
+    const logEntry = new Log({
+      file: 'cartController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -19,8 +23,12 @@ exports.createNewCart = async (body) => {
     await cart.save();
     return cart
   }
-  catch {
-    return 'error';
+  catch(err) {
+    const logEntry = new Log({
+      file: 'cartController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -34,15 +42,19 @@ exports.editItemIntoCart = async (req, res) => {
     );
     res.status(200).json(cartItems);
   }
-  catch {
-
+  catch (err){
+    const logEntry = new Log({
+      file: 'cartController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
 
 // Empty the cart by removing all cart items in it
 exports.emptyCart = async (req, res) => {
-  // try {
+  try {
     console.log("user ID ",req.user._id)
     const cartItems = await Cart.findOneAndUpdate(
       { userId: req.user._id },
@@ -50,10 +62,14 @@ exports.emptyCart = async (req, res) => {
       { new: true } // This ensures that the updated document is returned
     );
     res.status(200).json(cartItems);
-  // }
-  // catch {
-
-  // }
+  }
+  catch(err) {
+    const logEntry = new Log({
+      file: 'cartController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 };
 
 
@@ -76,9 +92,12 @@ exports.deleteFromCart = async (req, res) => {
       res.status(404).json({ error: 'Product not found in cart' });
     }
 
-  } catch (error) {
-    console.error('Error removing product from cart:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'cartController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 
 }
@@ -95,9 +114,13 @@ console.log("user",req.user)
 
     res.status(200).json({ userCart, status: 200 });
 
-  } catch (error) {
-    console.error('Error getting CartItems:', error.message);
-    res.status(500).json({ error: 'Internal Server Error', status: 500 });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'cartController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+
   }
 }
 
@@ -116,9 +139,12 @@ exports.getCartItem = async (req, res) => {
 
 
     res.status(200).json({ status: "found", cartItem: cartItem });
-  } catch (error) {
-    console.error('Error getting CartItem:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'cartController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 }
 

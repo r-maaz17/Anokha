@@ -1,9 +1,9 @@
 const Order = require('../models/orders');
 const user = require('../models/user');
-
+const Log = require('../models/Log');
 // Create a new order
 exports.createOrder = async (req, res) => {
-  // try {
+   try {
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -21,9 +21,13 @@ exports.createOrder = async (req, res) => {
   const order = new Order(req.body);
   await order.save();
   res.status(201).json(order);
-  // } catch (error) {
-  //   res.status(500).json({ error: error.message });
-  // }
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'ordersController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 };
 
 // Get all orders
@@ -31,8 +35,12 @@ exports.getOrders = async (req, res) => {
   try {
     const orders = await Order.find();
     res.status(200).json(orders);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'ordersController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -44,12 +52,17 @@ exports.getOrderById = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
     res.status(200).json(order);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'ordersController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
 exports.setOrderStatus = async (req, res) => {
+  try{
     const updatedBy = req.userId;
     if (req.body.status === "approve" || req.body.status === "reject")
     {
@@ -61,9 +74,13 @@ exports.setOrderStatus = async (req, res) => {
     res.status(200).json(message);
     }
 
-  // } catch (error) {
-  //   res.status(500).json({ error: error.message });
-  // }
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'ordersController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+}
 };
 // Update an order by OrderId
 exports.updateOrder = async (req, res) => {
@@ -77,8 +94,12 @@ exports.updateOrder = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
     res.status(200).json(order);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'ordersController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -90,7 +111,12 @@ exports.deleteOrder = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
     res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'ordersController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+}
 };
+

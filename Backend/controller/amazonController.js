@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-
+const Log = require('../models/Log');
 /**
  * @description Uploads an image to S3
  * @param imageName Image name
@@ -23,8 +23,11 @@ async function upload(req, res) {
     try {
         data = await promiseUpload(params);
     } catch (err) {
-        console.error(err);
-        return "";
+        const logEntry = new Log({
+            file: 'amazonController.js', 
+            exception: err.message,
+          });
+          await logEntry.save();
     }
     return data.Location;
 }
@@ -33,7 +36,8 @@ async function upload(req, res) {
  * @param params S3 bucket params
  * @return data/err S3 response object
  */
-function promiseUpload(params) {
+async function promiseUpload(params) {
+    try{
     const aws_config =
     {
         accessKeyId: process.env.AMAZON_ACCESS_KEY,
@@ -50,6 +54,14 @@ function promiseUpload(params) {
             }
         });
     });
+}catch(err)
+{
+    const logEntry = new Log({
+        file: 'amazonController.js', 
+        exception: err.message,
+      });
+      await logEntry.save();
+}
 }
 
 module.exports = { upload };

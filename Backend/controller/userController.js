@@ -2,7 +2,7 @@ const User = require('../models/user');
 const TempUser = require('../models/TempUser');
 const nodemailer = require('nodemailer');
 const {createNewCart} = require('./cartController');
-
+const Log = require('../models/Log');
 
 
 // Create a new user
@@ -19,8 +19,12 @@ exports.createUser = async (req, res) => {
       await createNewCart(payload)
     }
     res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -29,25 +33,48 @@ exports.getUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
 // Get verification code of the user from the database
 const getUserVerificationCode = async (Email) => {
+  try{
     const user = await TempUser.findOne({ Email: Email })
     return user.verificationCode;
+  }
+  catch(err){
+    const logEntry = new Log({
+      file: 'productController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 }
 
 // Generates a random number
-const generateRandomNumber = () => {
+const generateRandomNumber = async () => {
+  try{
   const randomNumber = Math.floor(Math.random() * 900000) + 100000;
   return randomNumber;
+  }
+  catch{
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 };
 
 //Generate Verification Code
 const generateVerificationCode = async (user) => {
+  try{
     const number = generateRandomNumber();
     const tempUser = await TempUser.findOneAndUpdate(
       { _id: user._id },
@@ -55,11 +82,20 @@ const generateVerificationCode = async (user) => {
       { new: true } // This ensures that the updated document is returned
     );
     return number;
+  }
+  catch(err){
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 }
 
 
 //Sign up a user and stores data into temperary table until user is verified.
 exports.signUp = async (req, res) => {
+  try{
   const user = await User.findOne({ Email: req.body.Email });
   if (!user) {
     var tempUser = await TempUser.findOne({ Email: req.body.Email })
@@ -76,20 +112,36 @@ exports.signUp = async (req, res) => {
   else {
     res.status(200).json({ error: 'User Already exists' })
   }
+}catch(err){
+  const logEntry = new Log({
+    file: 'userController.js', 
+    exception: err.message,
+  });
+  await logEntry.save();
+}
 };
 
 
 // Return the number of tries user tried to enter verification code
 const getTries = async (Email) => {
+  try{
   const user = await TempUser.findOne({ Email: Email });
   console.log(user)
   return user.tries;
+  }
+  catch(err){
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 }
 
 
 //Check the verification code entered by user on the time of signup
 exports.checkCode = async (req, res) => {
-  // try {
+  try {
     const code = req.body.code;
     const result = await getUserVerificationCode(req.body.Email)
     const tries = await getTries(req.body.Email)
@@ -127,6 +179,13 @@ exports.checkCode = async (req, res) => {
       res.status(429).json({ status: 'too many requests' })
 
     }
+  }catch(err){
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 
 }
 // Get a user by UserId
@@ -137,8 +196,12 @@ exports.getUserById = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
     res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -154,31 +217,38 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
     res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
 // Delete a user by UserId
 exports.deleteUser = async (req, res) => {
-  // try {
+  try {
   console.log(req.params.userId)
   const user = await User.findOneAndRemove({ _id: req.params.userId });
   if (!user) {
     return res.status(404).json({ message: 'User not found' });
   }
   res.status(204).send();
-  // }
-  //   catch (error) {
-  //     res.status(500).json({ error: error.message });
-  //   }
+  }
+    catch (err) {
+      const logEntry = new Log({
+        file: 'userController.js', 
+        exception: err.message,
+      });
+      await logEntry.save();
+}
 };
-
 
 
 // Sends mail to a user based on email
 const SendEmail = async (email,subject,message,htmlCode) => {
-  // try {
+  try {
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -201,8 +271,12 @@ const SendEmail = async (email,subject,message,htmlCode) => {
 
 
 
-  //   // res.send("I am ready")
-  // } catch (error) {
-  //   console.log(error.message);
-  //}
+    // res.send("I am ready")
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'userController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 };

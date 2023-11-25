@@ -1,9 +1,9 @@
 const Product = require('../models/products');
 const AWS = require('aws-sdk');
-
+const Log = require('../models/Log');
 // Create a new product
 exports.createProduct = async (req, res) => {
-  // try {
+  try {
     console.log(req.body)
     req.body.image = await upload(req.body.image)
     
@@ -15,14 +15,18 @@ exports.createProduct = async (req, res) => {
     await product.save();
     console.log("product",product)
     res.status(201).json(product);
-  // } catch (error) {
-  //   console.log(error);
-  //   res.status(500).json({ error: error.message });
-  // }
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'productController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
+  }
 };
 
 async function upload(body,imageName) {
   console.log(body)
+  try {
   const uploadedFile = body.image;
 
   const params = {
@@ -34,15 +38,19 @@ async function upload(body,imageName) {
   };
 
   let data;
-  try {
+  
       data = await promiseUpload(params);
   } catch (err) {
-      console.error(err);
-      return "";
+    const logEntry = new Log({
+      file: 'productController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
   return data.Location;
 }
-function promiseUpload(params) {
+async function promiseUpload(params) {
+  try{
   const aws_config =
   {
       accessKeyId: process.env.AMAZON_ACCESS_KEY,
@@ -60,14 +68,26 @@ function promiseUpload(params) {
       });
   });
 }
+catch(err){
+  const logEntry = new Log({
+    file: 'productController.js', 
+    exception: err.message,
+  });
+  await logEntry.save();
+}
+}
 
 // Get all products
 exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'productController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -79,8 +99,12 @@ exports.getProductById = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
     res.status(200).json(product);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'productController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -97,8 +121,12 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
     res.status(200).json(product);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'productController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
 
@@ -110,7 +138,11 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
     res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    const logEntry = new Log({
+      file: 'productController.js', 
+      exception: err.message,
+    });
+    await logEntry.save();
   }
 };
