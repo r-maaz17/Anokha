@@ -168,18 +168,7 @@ export default function Navbar(props) {
         <MenuItem>
           <p>Notifications</p>
         </MenuItem>
-        <MenuItem onClick={handleProfileMenuOpen}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <AccountCircle />
-          </IconButton>
-          <p>Profile</p>
-        </MenuItem>
+        
         <MenuItem onClick={handleProfileMenuOpen}>
           <IconButton
             size="large"
@@ -266,7 +255,15 @@ export default function Navbar(props) {
             : (props.isUser && <div>
               <Button onClick={() => { navigate('/signup') }} variant="contained" color="error">Sign Up</Button>
               <Button onClick={() => { navigate('/signin') }} variant="contained" color="success">Sign in</Button>
-            </div>)
+            </div> ? <></> : (<IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+            onClick={handleLogout}>
+            <AccountCircle />
+          </IconButton>))
           }
 
 
