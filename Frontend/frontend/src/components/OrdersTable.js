@@ -70,8 +70,14 @@ export default function OrderLists(props) {
     }, [])
     const getOrders = async () => {
         try {
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
 
-            const { data } = await axios.get('http://localhost:8000/api/v1/orders');
+            const { data } = await axios.get(API_URLS.GET_ALL_ORDERS, config);
             console.log(data);
             setOrders(data)
         }
@@ -90,16 +96,16 @@ export default function OrderLists(props) {
     }
     const setStatus = async (id, status) => {
         console.log(id);
-        const toke = localStorage.getItem('userItem');
+        const token = localStorage.getItem('userItem');
         const config = {
             headers: {
-                'Authorization': toke, // Assuming it's a bearer token
-            }
+                'Authorization': token,
+            },
         };
         const payload = {
             status: status
         }
-        const { data } = await axios.put(`${API_URLS.SET_ORDER_STATUS}${id}`, payload,config);
+        const { data } = await axios.put(`${API_URLS.SET_ORDER_STATUS}${id}`, payload, config);
         getOrders();
     }
 
