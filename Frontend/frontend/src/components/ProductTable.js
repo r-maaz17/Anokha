@@ -116,7 +116,7 @@ export default function ProductLists(props) {
             const config = {
                 headers: {
                     'Authorization': token,
-                },
+                }, 
             };
             const { data } = await axios.put(`${API_URLS.UPDATE_PRODUCT}${editProduct?._id}`, formData,config);
             getProducts()
