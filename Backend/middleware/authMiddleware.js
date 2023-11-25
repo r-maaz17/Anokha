@@ -67,6 +67,7 @@ async function verifyTokenMiddleware(req, res, next) {
       .then((decoded) => {
         if (decoded.RoleId === "admin")
         {
+          req.user = decoded;
         next();
         }
         else{
