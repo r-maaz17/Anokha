@@ -10,7 +10,6 @@ import Dashboard from "./components/Dashboard";
 import ProductLists from "./components/ProductTable";
 import UserLists from "./components/UserTable";
 import OrderLists from "./components/OrdersTable";
-import { Feedbacks } from "./components/Feedbacks";
 import Mails from "./components/Mails";
 import ProductPage from "./components/ProductPage";
 import getUserAuth from "./components/apis/utils";
@@ -85,6 +84,7 @@ function App() {
           <Route path="/admin/*" element={<Navigate to="/home" />} />
           </>
         )}
+        <Route path="/checkout-success" element={<CheckOutSuccess />} />
       </Routes>
 
     </div>
