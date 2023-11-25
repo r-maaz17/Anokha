@@ -25,6 +25,7 @@ export const API_URLS = {
   SET_MESSAGE_STATUS: `${API_BASE_URL}${API_ROUTE}/set-message-status/`,
 
   SET_ORDER_STATUS: `${API_BASE_URL}${API_ROUTE}/order/`,
+  GET_ALL_ORDERS: `${API_BASE_URL}${API_ROUTE}/orders`,
   
   GET_USERS: `${API_BASE_URL}${API_ROUTE}/users`,
   GET_USER: `${API_BASE_URL}${API_ROUTE}/user/`,
