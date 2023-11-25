@@ -4,8 +4,12 @@ const Message = require('../models/Message');
 exports.CreateNewMessage = async (req, res) => {
     try {
         req.body.status = 'pending'
-      const messenger = new Message(req.body);
-      await messenger.save();
+        const messenger = new Message({
+          ...req.body,
+          createdBy: req.user._id || 'unknown',
+          updatedBy: req.user._id || 'unknown',
+        });
+        await messenger.save();
       res.status(201).json(messenger);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -28,10 +32,10 @@ exports.CreateNewMessage = async (req, res) => {
     try {
       if (req.body.status === "in progress" || req.body.status === "solved")
       {
-      const message = await Message.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: { status: req.body.status} },
-        { new: true } // This ensures that the updated document is returned
+        const message = await Message.findOneAndUpdate(
+          { _id: req.params.id },
+          { $set: { status: req.body.status, updatedBy: req.user._id || 'unknown' } },
+          { new: true } // This ensures that the updated document is returned
       );
       res.status(200).json(message);
       }
