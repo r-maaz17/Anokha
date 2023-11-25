@@ -66,7 +66,7 @@ const tailLayout = {
     },
 };
 
-export default function Mails (props) {
+export default function Mails(props) {
     const [isTable, setIsTable] = useState(true);
     const [formData, setFormData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -74,21 +74,26 @@ export default function Mails (props) {
     const [messages, setMessages] = useState([])
     const formRef = React.useRef(null);
     React.useEffect(() => {
-       getMessages();
+        getMessages();
     }, [])
 
 
     const getMessages = async () => {
         try {
-
-            const { data } = await axios.get(API_URLS.GET_ALL_MESSAGES);
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
+            const { data } = await axios.get(API_URLS.GET_ALL_MESSAGES, config);
             setMessages(data)
         }
         catch {
             console.log("Error in fething messages")
         }
     }
-    
+
     const modalCicked = (row) => {
         setFormData(row);
         console.log(formData);
@@ -96,18 +101,24 @@ export default function Mails (props) {
 
 
     }
-    const setStatus = async (id,status) => {
+    const setStatus = async (id, status) => {
         const payload = {
-            status:status
+            status: status
         }
-        const { data } = await axios.put(`${API_URLS.SET_MESSAGE_STATUS}${id}`,payload);
+        const token = localStorage.getItem('userItem');
+        const config = {
+            headers: {
+                'Authorization': token,
+            },
+        };
+        const { data } = await axios.put(`${API_URLS.SET_MESSAGE_STATUS}${id}`, payload, config);
         getMessages()
     }
     const markSolved = () => {
 
     }
     const onFinish = (values) => {
- 
+
         setIsModalOpen(false)
 
     };
@@ -152,7 +163,7 @@ export default function Mails (props) {
                         <Form.Item
                             name="User Email"
                             label="User Email"
-                            
+
                         >
                             <Input
                                 value={formData.email}
@@ -184,12 +195,12 @@ export default function Mails (props) {
                             <TextArea
                                 value={formData.Message}
                                 defaultValue={formData.Message}
-                                style={{height:'100px'}}
+                                style={{ height: '100px' }}
                                 readOnly
 
                             />
                         </Form.Item>
-                    
+
                     </Form>}
 
                 </Modal>
@@ -207,7 +218,7 @@ export default function Mails (props) {
                                     <StyledTableCell align="center">Name</StyledTableCell>
                                     <StyledTableCell align="center">Email</StyledTableCell>
                                     <StyledTableCell align="center">status</StyledTableCell>
-                                    
+
                                     <StyledTableCell align="center">In Progress</StyledTableCell>
                                     <StyledTableCell align="center">Mark Solved</StyledTableCell>
                                     <StyledTableCell align="center">View More Details</StyledTableCell>
@@ -223,8 +234,8 @@ export default function Mails (props) {
                                         <StyledTableCell align="center">{row.name}</StyledTableCell>
                                         <StyledTableCell align="center">{row.email}</StyledTableCell>
                                         <StyledTableCell align="center">{row.status}</StyledTableCell>
-                                        <StyledTableCell align="center"><Button onClick={() => setStatus(row._id,'in progress')} variant="contained" color="success">In Progress</Button></StyledTableCell>
-                                        <StyledTableCell align="center"><Button onClick={() => setStatus(row._id,'solved')} variant="contained" color="error">Solved</Button></StyledTableCell>
+                                        <StyledTableCell align="center"><Button onClick={() => setStatus(row._id, 'in progress')} variant="contained" color="success">In Progress</Button></StyledTableCell>
+                                        <StyledTableCell align="center"><Button onClick={() => setStatus(row._id, 'solved')} variant="contained" color="error">Solved</Button></StyledTableCell>
                                         <StyledTableCell align="center"><Button onClick={() => modalCicked(row)} variant="contained" color="success">View details</Button></StyledTableCell>
 
 
