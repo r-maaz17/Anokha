@@ -18,7 +18,7 @@ router.put('/delete-cart/',verifyTokenMiddleware,CartController.emptyCart);
 //get all cartItems
 //router.get('/cartitems', verifyTokenMiddleware,CartController.getCartItems);
 
-router.get('/cartitems',CartController.getCartItems);
+router.get('/cartitems',verifyTokenMiddleware,CartController.getCartItems);
 // get cartItem from cart of specific product Id
 router.get('/cartitem/:productId', verifyTokenMiddleware,CartController.getCartItem);
 

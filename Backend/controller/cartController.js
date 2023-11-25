@@ -34,7 +34,7 @@ exports.createNewCart = async (body) => {
 
 // edit Cart items of Cart
 exports.editItemIntoCart = async (req, res) => {
-  try {
+  // try {
     const cartItems = await Cart.findOneAndUpdate(
       { _id: req.params.id },
       { $set: { cartItems: req.body } },
@@ -42,14 +42,14 @@ exports.editItemIntoCart = async (req, res) => {
     );
     res.status(200).json(cartItems);
   }
-  catch (err){
-    const logEntry = new Log({
-      file: 'cartController.js', 
-      exception: err.message,
-    });
-    await logEntry.save();
-  }
-};
+  // catch (err){
+  //   const logEntry = new Log({
+  //     file: 'cartController.js', 
+  //     exception: err.message,
+  //   });
+  //   await logEntry.save();
+  // }
+// };
 
 
 // Empty the cart by removing all cart items in it
