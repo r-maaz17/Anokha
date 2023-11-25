@@ -35,9 +35,31 @@ function verifyTokenMiddleware(req, res, next) {
         console.log(err);
       });
   }
+  function verifyAdminMiddleware(req, res, next) {
+    const token = req.header('Authorization');
+    console.log("token",token)
+    if (!token) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+
+    verifyJWT(token)
+      .then((decoded) => {
+        if (decoded.RoleId === "admin")
+        {
+        next();
+        }
+        else{
+          return res.status(401).json({ message: 'Access denied' });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
 
 module.exports = {
   verifyJWT,
   verifyTokenMiddleware,
+  verifyAdminMiddleware
 };
