@@ -3,7 +3,7 @@ const AWS = require('aws-sdk');
 const Log = require('../models/Log');
 // Create a new product
 exports.createProduct = async (req, res) => {
-  try {
+  // try {
     console.log(req.body)
     req.body.image = await upload(req.body.image)
     
@@ -15,13 +15,13 @@ exports.createProduct = async (req, res) => {
     await product.save();
     console.log("product",product)
     res.status(201).json(product);
-  } catch (err) {
-    const logEntry = new Log({
-      file: 'productController.js', 
-      exception: err.message,
-    });
-    await logEntry.save();
-  }
+  // } catch (err) {
+  //   const logEntry = new Log({
+  //     file: 'productController.js', 
+  //     exception: err.message,
+  //   });
+  //   await logEntry.save();
+  // }
 };
 
 async function upload(body,imageName) {
@@ -40,6 +40,7 @@ async function upload(body,imageName) {
   let data;
   
       data = await promiseUpload(params);
+      return data.Location;
   } catch (err) {
     const logEntry = new Log({
       file: 'productController.js', 
@@ -47,7 +48,7 @@ async function upload(body,imageName) {
     });
     await logEntry.save();
   }
-  return data.Location;
+  
 }
 async function promiseUpload(params) {
   try{

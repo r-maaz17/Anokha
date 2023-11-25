@@ -14,101 +14,102 @@ export default function ProductCard(props) {
     const navigate = useNavigate('');
 
     async function addToCart() {
-        try{
-        var resp = await getUserAuth();
-        const token = resp.data._id;
-        const data = await getCartItems();
-       // console.log("Status = ",data.status)
+        try {
+            var resp = await getUserAuth();
+            const token = resp.data._id;
+            const data = await getCartItems();
+            // console.log("Status = ",data.status)
 
-       // console.log("DATA",data.userCart)
-        
-        const config = {
-            headers: {
-                'Authorization': `${localStorage.getItem('userItem')}`, // Assuming it's a bearer token
-                'Content-Type': 'application/json', // Adjust the content type if needed
-            }
-        };
-       
-        if (data.status === 200) {
-            const quantityToAdd = 1;
-        
-            const cartItems = data.userCart.cartItems;
-            const updatedItems = {
-                
-                cartItems: cartItems.map(item =>
-                    item.productId === props._id
-                        ? { ...item, quantity: item.quantity + quantityToAdd
-                         }
-                        : item
-                )
+            // console.log("DATA",data.userCart)
+
+            const config = {
+                headers: {
+                    'Authorization': `${localStorage.getItem('userItem')}`, // Assuming it's a bearer token
+                    'Content-Type': 'application/json', // Adjust the content type if needed
+                }
             };
 
-            const isProductIdPresent = cartItems.some(item => item.productId === props._id);
-            if (!isProductIdPresent){
-            const newCart = {
-                userId:token,
-                productId:props._id,
-                status:"AddedIntoCart",
-                quantity:1
-            }
-            data.userCart.cartItems.push(newCart)
-            console.log(data.userCart.cartItems)
+            if (data.status === 200) {
+                const quantityToAdd = 1;
+
+                const cartItems = data.userCart.cartItems;
+                const updatedItems = {
+
+                    cartItems: cartItems.map(item =>
+                        item.productId === props._id
+                            ? {
+                                ...item, quantity: item.quantity + quantityToAdd
+                            }
+                            : item
+                    )
+                };
+
+                const isProductIdPresent = cartItems.some(item => item.productId === props._id);
+                if (!isProductIdPresent) {
+                    const newCart = {
+                        userId: token,
+                        productId: props._id,
+                        status: "AddedIntoCart",
+                        quantity: 1
+                    }
+                    data.userCart.cartItems.push(newCart)
+                    console.log(data.userCart.cartItems)
 
 
-}
-else {
-    data.userCart.cartItems = updatedItems.cartItems
-}   
-
-            const res = await axios.put(`${API_URLS.ADD_INTO_CART}${data.userCart._id}`,  data.userCart.cartItems, config);
-            return res.data;
-        }
-
-        else if (data.data.status === 404) {
-          //  console.log("YES")
-            var userAuth = await getUserAuth();
-            const token = userAuth.data._id;
-            const newCart = {
-                userId: token,
-                cartItems: {
-                    userId: token,
-                    productId: props._id,
-                    status: "AddedIntoCart",
-                    quantity: 1
                 }
+                else {
+                    data.userCart.cartItems = updatedItems.cartItems
+                }
+
+                const res = await axios.put(`${API_URLS.ADD_INTO_CART}${data.userCart._id}`, data.userCart.cartItems, config);
+                return res.data;
             }
-            const res = await axios.post(API_URLS.CREATE_NEW_CART, newCart, config);
-            return res.data;
+
+            else if (data.data.status === 404) {
+                //  console.log("YES")
+                var userAuth = await getUserAuth();
+                const token = userAuth.data._id;
+                const newCart = {
+                    userId: token,
+                    cartItems: {
+                        userId: token,
+                        productId: props._id,
+                        status: "AddedIntoCart",
+                        quantity: 1
+                    }
+                }
+                const res = await axios.post(API_URLS.CREATE_NEW_CART, newCart, config);
+                return res.data;
+            }
+
+            // const cartItem = await getCartItem(props._id)
+            // if (cartItem !== null)
+            // {
+            //     cartItem.quantity = cartItem.quantity + 1;
+            // }
+            // const result = axios.post('http://localhost:8000/api/v1/cart',cart,config);
+            //return result;
+
         }
-
-        // const cartItem = await getCartItem(props._id)
-        // if (cartItem !== null)
-        // {
-        //     cartItem.quantity = cartItem.quantity + 1;
-        // }
-       // const result = axios.post('http://localhost:8000/api/v1/cart',cart,config);
-        //return result;
-
-    }
-    catch{
-        navigate('/signin')
-    }
+        catch {
+            navigate('/signin')
+        }
     }
     async function getCartItems() {
         try {
-        const token = localStorage.getItem('userItem');
-        const config = {
-            headers: {
-                'Authorization': token,
-            },
-        };
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
 
-        const {data} = await axios.get(API_URLS.GET_CARTITEMS, config)
-      console.log("response",data.userCart)
-        return data;
-    }catch{
-        navigate('/signin')
-    }
+            const { data } = await axios.get(API_URLS.GET_CARTITEMS, config)
+            console.log("response", data.userCart)
+            return data;
+        } catch {
+            navigate('/signin')
+        }
     }
     async function getCartItem(productId) {
         var response = await getUserAuth();
@@ -149,27 +150,15 @@ else {
                         <br />
 
                         <div className='col'>
-                                <Typography component="legend">Quantity Left : {props.quantityAvailable}</Typography>
-                            </div>
+                            <Typography component="legend">Price : {props.price}</Typography>
+                        </div>
                     </div>
-                    <div className='col'>
-                        {/* <div className='row'> */}
-
-                            <div className='col'>
-                                <Typography component="legend">Price</Typography>
-                            </div>
-                            <div className='col'>
-                                <Typography component="legend">{props.price}Rs.</Typography>
-                            </div>
-       
-                     
-
-                    </div>
+               
                 </div>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={addToCart}>Add to Cart</Button>
-                <Button size="small" onClick={()=>{}}>Go To Details</Button>
+                <Button size="small" onClick={addToCart} variant="contained" color="success">Add to Cart</Button>
+                
             </CardActions>
         </Card>
     );

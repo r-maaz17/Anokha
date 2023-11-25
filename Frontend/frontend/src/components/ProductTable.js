@@ -79,8 +79,14 @@ export default function ProductLists(props) {
 
     const getProducts = async () => {
         try {
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
 
-            const { data } = await axios.get(API_URLS.GET_PRODUCTS);
+            const { data } = await axios.get(API_URLS.GET_PRODUCTS,config);
             console.log(data);
             setProducts(data)
         }
@@ -100,8 +106,14 @@ export default function ProductLists(props) {
     }
     const getProduct = async (id) => {
         try {
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
             setLoading(true);
-            const { data } = await axios.get(`${API_URLS.GET_PRODUCT}${id}`);
+            const { data } = await axios.get(`${API_URLS.GET_PRODUCT}${id}`,config);
             console.log('data', data)
             setEditProduct(data)
             console.log('a', editProduct)
@@ -125,7 +137,13 @@ export default function ProductLists(props) {
     }
     const delProduct = async (id) => {
         try {
-            const data = await axios.delete(`${API_URLS.DELETE_PRODUCT}${id}`);
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
+            const data = await axios.delete(`${API_URLS.DELETE_PRODUCT}${id}`,config);
             getProducts();
         } catch (error) { }
     };
@@ -207,7 +225,13 @@ export default function ProductLists(props) {
                 ...formData,
                 image: image,
             };
-            const { data } = await axios.post(API_URLS.CREATE_PRODUCT, formDataWithImage);
+            const token = localStorage.getItem('userItem');
+            const config = {
+                headers: {
+                    'Authorization': token,
+                },
+            };
+            const { data } = await axios.post(API_URLS.CREATE_PRODUCT, formDataWithImage,config);
 
             setProducts([...products, data])
             setLoading(false);
