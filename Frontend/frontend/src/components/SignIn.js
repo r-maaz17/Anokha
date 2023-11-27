@@ -21,7 +21,7 @@ const SignIn = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const handleLogin = async () => {
-        // try {
+        try {
             console.log(email,password,"user")
           const response = await axios.post(API_URLS.SIGN_IN, {
             email: email,
@@ -45,11 +45,11 @@ const SignIn = () => {
           else{
             setError("Error");
           }
-        // } catch (error) {
-        //     setError('Error in catch');
-        //   console.error('Error:', error.response.data);
-        // }
-      };
+        } catch (error) {
+            setError('Something is wrong');
+          console.error('Error:', error.response.data);
+        }
+      }
     return (
         <div>
             <Navbar />

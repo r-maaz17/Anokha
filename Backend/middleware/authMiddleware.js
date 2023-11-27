@@ -31,6 +31,7 @@ async function verifyJWT(token) {
 // Verify the token is provided and check the validity of token
 async function verifyTokenMiddleware(req, res, next) {
   try{
+    console.log('Request Headers:', req.headers);
     const token = req.header('Authorization');
     console.log("token",token)
     if (!token) {

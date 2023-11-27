@@ -27,6 +27,8 @@ async function login(req, res) {
         const user = await User.findOne({ Email: email });
         if (!user) return res.status(404).json({ error: 'User not found' });
         if (user.Password != password) return res.status(401).json({ error: 'Invalid credentials' });
+        user.token = "";
+        // await user.save();
         const token = await GenerateToken(JSON.stringify(user));
         user.token = token;
         await user.save();
