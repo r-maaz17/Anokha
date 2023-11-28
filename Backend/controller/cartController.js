@@ -106,7 +106,8 @@ exports.deleteFromCart = async (req, res) => {
 //return all the cart of a user
 exports.getCartItems = async (req, res) => {
   try {
-console.log("user",req.user)
+    
+console.log("user",req.headers)
     const userCart = await Cart.findOne({ userId: req.user._id });
     if (!userCart) {
       return res.status(404).json({ error: 'User cart not found', status: 404 });

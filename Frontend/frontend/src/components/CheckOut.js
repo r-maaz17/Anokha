@@ -77,10 +77,19 @@ export default function CheckOut(props) {
 
         // }
     }, []); // Assuming cartItems is a dependency
+    React.useEffect(() => {
+
+        // try {
+            getTotalPrice();
+        // }
+        // catch {
+
+        // }
+    }, [productsInCart]);
     // React.useEffect(() => {
-    //     getTotalPrice();
     // }, [productsInCart]);
     const fetchData = async () => {
+        try{
         const updatedProducts = [];
         setLoading(true)
         await Promise.all(
@@ -93,16 +102,15 @@ export default function CheckOut(props) {
 
         setProductsInCart(updatedProducts);
         setLoading(false)
-        getTotalPrice();
+        }
+        catch{
+            
+        }
     };
 
     React.useEffect(() => {
         try {
-
-
             fetchData();
-           // getTotalPrice();
-            // getTotalPrice();
         }
         catch {
 

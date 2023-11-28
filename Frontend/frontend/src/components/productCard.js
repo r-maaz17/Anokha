@@ -18,10 +18,6 @@ export default function ProductCard(props) {
             var resp = await getUserAuth();
             const token = resp.data._id;
             const data = await getCartItems();
-            // console.log("Status = ",data.status)
-
-            // console.log("DATA",data.userCart)
-
             const config = {
                 headers: {
                     'Authorization': `${localStorage.getItem('userItem')}`, // Assuming it's a bearer token
@@ -81,6 +77,7 @@ export default function ProductCard(props) {
                 const res = await axios.post(API_URLS.CREATE_NEW_CART, newCart, config);
                 return res.data;
             }
+            window.location.reload();
 
             // const cartItem = await getCartItem(props._id)
             // if (cartItem !== null)

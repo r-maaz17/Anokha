@@ -9,7 +9,7 @@ import { API_URLS } from './apis/apiConfig';
 
 function MainPage() {
   const [products, setProducts] = useState([]);
-  const [cartItems, setCartItems] = useState([])
+  const [cartItems, setCartItems] = useState([]);
   const [status, setStatus] = useState('');
 
   const getProducts = async () => {
@@ -23,16 +23,13 @@ function MainPage() {
     }
   }
   useEffect(() => {
-    getProducts();
-    try {
-      getCartItems();
-    }
-    catch {
+    const fetchData = async () => {
+      await getProducts();
+      await getCartItems();
+    };
 
-    }
-
-  }, [])
-
+    fetchData();
+  }, []);
 
   async function getCartItems() {
     try {
@@ -45,41 +42,54 @@ function MainPage() {
       };
 
       const { data } = await axios.get(API_URLS.GET_CARTITEMS, config)
-      setCartItems(prevCartItems => data.userCart.cartItems);
-      //console.log("response",data.userCart)
+      setCartItems(data.userCart.cartItems);
+      console.log("Seted State::",cartItems)
       return data;
     }
     catch {
       return []
     }
   }
-  async function addToCart(_id) {
-    const response = await getUserAuth();
-    // console.log("RESPONSE",response)
-    const token = response.data._id;
-    const payload = {
-      userId: token,
-      productId: _id,
-      status: "AddedIntoCart"
-    }
-    const toke = localStorage.getItem('userItem');
-    const config = {
-      headers: {
-        'Authorization': toke, // Assuming it's a bearer token
-      }
-    };
-    const result = await axios.post(API_URLS.ADD_INTO_CART, payload, config);
-    setStatus("ADDED INTO CART")
-    try {
-      await getCartItems();
-    }
-    catch {
+  // async function addToCart(_id) {
+  //   //try {
+  //     const response = await getUserAuth();
+  //     // console.log("RESPONSE",response)
+  //     const token = response.data._id;
+  //     const payload = {
+  //       userId: token,
+  //       productId: _id,
+  //       status: "AddedIntoCart"
+  //     }
+  //     const toke = localStorage.getItem('userItem');
+  //     const config = {
+  //       headers: {
+  //         'Authorization': toke, // Assuming it's a bearer token
+  //       }
+  //     };
+  //     const result = await axios.post(API_URLS.ADD_INTO_CART, payload, config);
+  //     setStatus("ADDED INTO CART")
+  //     //try {
+  //       await getCartItems();
+  //       window.location.reload();
+  //     // }
+  //     // catch {
 
-    }
-    return result
+  //     // }
+  //     return result
+  //   //}
+  //   //catch {
+  //     // try {
+  //     //   await getCartItems();
+  //     // }
+  //     // catch {
+
+  //     // }
+  //   //}
 
 
-  }
+
+
+  // }
 
   return (
     <div>
@@ -94,7 +104,7 @@ function MainPage() {
             {products.map((product) => (
 
               <div className="col-md-4" style={{ marginBottom: 30 }}>
-                <ProductCard title={product.ProductName} price={product.Price} image={product.image} quantityAvailable={product.StockQuantity} rating={4} _id={product._id} addToCart={addToCart} description={product.Description}/>
+                <ProductCard title={product.ProductName} price={product.Price} image={product.image} quantityAvailable={product.StockQuantity} rating={4} _id={product._id} description={product.Description} />
               </div>
             ))}
           </div>
